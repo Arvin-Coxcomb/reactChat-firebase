@@ -34,14 +34,16 @@ const Login = () => {
         try{
             const res = await createUserWithEmailAndPassword(auth,email,password);
 
-            const imgUrl = await upload(avatar.file);
+            if(avatar.file){
+                const imgUrl = await upload(avatar.file);
+            }
 
             await setDoc(doc(db, "users", res.user.uid),{
                 username,
                 email,
-                avatar : imgUrl,
                 id : res.user.uid,
                 blocked : [],
+                ...(avatar?.file && {avatar : imgUrl})
             });
 
             await setDoc(doc(db,"userchats", res.user.uid),{
